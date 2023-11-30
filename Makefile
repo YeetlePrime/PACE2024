@@ -7,7 +7,7 @@ INCLUDE		:= lib
 
 all: main.exe
 
-main.exe: $(SRC)/main.cpp $(INCLUDE).h $(INCLUDE).hpp 
+main.exe: $(SRC)/main.cpp $(INCLUDE)/*.h $(SRC)/*.hpp
 	$(CC) $(CFLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 run: clean all
