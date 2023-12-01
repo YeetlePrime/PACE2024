@@ -2,6 +2,7 @@
 #define __OCR_GRAPH_BUILDER_HPP__
 
 #include <iostream>
+#include <fstream>
 
 #include "OcrGraph.hpp"
 
@@ -23,6 +24,24 @@ private:
             return false;
 
         return string.at(0) == character;
+    }
+
+    static bool stringEndsWith(const std::string &string, const std::string& endString) noexcept
+    {
+        if (string.size() < endString.size())
+            return false;
+
+        auto stringIter{string.rbegin()};
+        auto endStringIter{endString.rbegin()};
+
+        while (endStringIter != endString.rend() && stringIter != string.rend()) {
+            if (*stringIter != *endStringIter)
+                return false;
+            stringIter++;
+            endStringIter++;
+        }
+
+        return true;
     }
 
     static std::vector<std::string> splitString(const std::string &string, char delimiter) noexcept
@@ -74,7 +93,7 @@ private:
         }
     }
 
-    static void readEdgeLine(const std::string &edgeLine, OcrGraphInfo ocrGraphInfo)
+    static void readEdgeLine(const std::string &edgeLine, OcrGraphInfo& ocrGraphInfo)
     {
         auto strings = splitString(edgeLine, ' ');
         std::pair<size_t, size_t> edgeInfo;
@@ -85,7 +104,7 @@ private:
                 throw;
 
             edgeInfo.first = std::stol(strings.at(0));
-            edgeInfo.first = std::stol(strings.at(1));
+            edgeInfo.second = std::stol(strings.at(1));
 
             ocrGraphInfo.edgeEntries.push_back(edgeInfo);
         }
@@ -113,8 +132,6 @@ public:
 
         readPLine(line, ocrGraphInfo);
 
-        std::vector<bool> entries(ocrGraphInfo.numberOfFixedNodes * ocrGraphInfo.numberOfFreeNodes);
-
         while (std::getline(stream, line))
         {
             if (stringStartsWith(line, 'c'))
@@ -124,6 +141,17 @@ public:
         }
 
         return OcrGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.numberOfEdges, ocrGraphInfo.edgeEntries);
+    }
+
+    static OcrGraph buildFromFile(const std::string& filepath) {
+        if (!stringEndsWith(filepath, ".gr"))
+            throw std::invalid_argument("The provided file has to be of type \".gr\".");
+
+        std::ifstream file(filepath);
+        if (file.fail())
+            throw std::runtime_error("The file \"" + filepath + "\" does not exist.");
+        
+        return buildFromInputStream(file);
     }
 };
 
