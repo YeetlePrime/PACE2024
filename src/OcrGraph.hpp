@@ -56,7 +56,7 @@ private:
                 if (addEdge(entry.first, entry.second))
                     numberOfAddedEdges++;
             }
-            catch (std::invalid_argument invalidArgument)
+            catch (std::invalid_argument& invalidArgument)
             {
             }
         }
@@ -65,7 +65,7 @@ private:
     }
 
 public:
-    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), numberOfEdges(0), edges({std::vector<bool>(numberOfFixedNodes * numberOfFreeNodes, false)}) {}
+    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), edges({std::vector<bool>(numberOfFixedNodes * numberOfFreeNodes, false)}), numberOfEdges(0) {}
     OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes, size_t expectedNumberOfEdges, const std::vector<std::pair<size_t, size_t>> &edgeEntries) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), edges(std::vector<bool>(numberOfFixedNodes * numberOfFreeNodes, false)), numberOfEdges(addEdges(edgeEntries))
     {
         if (numberOfEdges != expectedNumberOfEdges)
