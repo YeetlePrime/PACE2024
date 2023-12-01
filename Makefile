@@ -11,7 +11,7 @@ main.exe: $(SRC)/main.cpp $(INCLUDE)/*.h $(SRC)/*.hpp
 	$(CC) $(CFLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 run: clean all
-	./main.exe
+	./main.exe "ressources/tiny_test_set/complete_4_5.gr"
 
 clean:
 	rm -f *.exe
