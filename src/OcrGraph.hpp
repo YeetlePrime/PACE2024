@@ -14,33 +14,24 @@ private:
     std::vector<std::vector<size_t>> adjacencyList;
     const size_t numberOfEdges;
 
-    void checkIdentifierOfFixedNode(size_t identifierOfFixedNode)
+    void checkIdentifierOfFixedNode(size_t identifierOfFixedNode) const
     {
         if (identifierOfFixedNode < 1 || identifierOfFixedNode > numberOfFixedNodes)
             throw std::invalid_argument("There is no fixed node with identifier \"" + std::to_string(identifierOfFixedNode) + "\".");
     }
 
-    void checkIdentifierOfFreeNode(size_t identifierOfFreeNode)
+    void checkIdentifierOfFreeNode(size_t identifierOfFreeNode) const
     {
         if (identifierOfFreeNode <= numberOfFixedNodes || identifierOfFreeNode > numberOfFreeNodes + numberOfFixedNodes)
             throw std::invalid_argument("There is no free node with identifier \"" + std::to_string(identifierOfFreeNode) + "\".");
     }
 
-    size_t getIndexForFixedNode(size_t identifierOfFixedNode) {
+    size_t getIndexForFixedNode(size_t identifierOfFixedNode) const {
         checkIdentifierOfFixedNode(identifierOfFixedNode);
         return --identifierOfFixedNode;
     }
 
-    size_t getIndexForIdentifiers(size_t identifierOfFixedNode, size_t identifierOfFreeNode) {
-        checkIdentifierOfFixedNode(identifierOfFixedNode);
-        checkIdentifierOfFreeNode(identifierOfFreeNode);
-
-        size_t indexOfFixedNode{identifierOfFixedNode - 1};
-        size_t indexOfFreeNode{identifierOfFreeNode - numberOfFixedNodes - 1};
-        return indexOfFixedNode + (indexOfFreeNode * numberOfFixedNodes);
-    }
-
-    bool vectorContainsElement(const std::vector<size_t>& vector, size_t element) {
+    bool vectorContainsElement(const std::vector<size_t>& vector, size_t element) const {
         return std::find(vector.begin(), vector.end(), element) != vector.end();
     }
 
