@@ -4,13 +4,14 @@
 #include <iostream>
 #include <vector>
 #include <exception>
+#include <algorithm>
 
 class OcrGraph
 {
 private:
     const size_t numberOfFixedNodes;
     const size_t numberOfFreeNodes;
-    std::vector<bool> edges;
+    std::vector<std::vector<size_t>> adjacencyList;
     const size_t numberOfEdges;
 
     void checkIdentifierOfFixedNode(size_t identifierOfFixedNode)
@@ -25,6 +26,11 @@ private:
             throw std::invalid_argument("There is no free node with identifier \"" + std::to_string(identifierOfFreeNode) + "\".");
     }
 
+    size_t getIndexForFixedNode(size_t identifierOfFixedNode) {
+        checkIdentifierOfFixedNode(identifierOfFixedNode);
+        return --identifierOfFixedNode;
+    }
+
     size_t getIndexForIdentifiers(size_t identifierOfFixedNode, size_t identifierOfFreeNode) {
         checkIdentifierOfFixedNode(identifierOfFixedNode);
         checkIdentifierOfFreeNode(identifierOfFreeNode);
@@ -34,14 +40,23 @@ private:
         return indexOfFixedNode + (indexOfFreeNode * numberOfFixedNodes);
     }
 
+    bool vectorContainsElement(const std::vector<size_t>& vector, size_t element) {
+        return std::find(vector.begin(), vector.end(), element) != vector.end();
+    }
+
     bool addEdge(size_t identifierOfFixedNode, size_t identifierOfFreeNode)
     {
-        size_t index{getIndexForIdentifiers(identifierOfFixedNode, identifierOfFreeNode)};
+        checkIdentifierOfFixedNode(identifierOfFixedNode);
+        checkIdentifierOfFreeNode(identifierOfFreeNode);
+        size_t indexOfFixedNode = getIndexForFixedNode(identifierOfFixedNode);
 
-        if (edges.at(index))
+        auto& neighboursOfFixedNode{adjacencyList.at(indexOfFixedNode)};
+
+        if (vectorContainsElement(neighboursOfFixedNode, identifierOfFreeNode)) 
             return false;
 
-        edges.at(index) = true;
+        neighboursOfFixedNode.push_back(identifierOfFreeNode);
+        
         return true;
     }
 
@@ -65,18 +80,11 @@ private:
     }
 
 public:
-    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), edges({std::vector<bool>(numberOfFixedNodes * numberOfFreeNodes, false)}), numberOfEdges(0) {}
-    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes, size_t expectedNumberOfEdges, const std::vector<std::pair<size_t, size_t>> &edgeEntries) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), edges(std::vector<bool>(numberOfFixedNodes * numberOfFreeNodes, false)), numberOfEdges(addEdges(edgeEntries))
+    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), adjacencyList({std::vector<std::vector<size_t>>(numberOfFixedNodes, std::vector<size_t>())}), numberOfEdges(0) {}
+    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes, size_t expectedNumberOfEdges, const std::vector<std::pair<size_t, size_t>> &edgeEntries) : numberOfFixedNodes(numberOfFixedNodes), numberOfFreeNodes(numberOfFreeNodes), adjacencyList({std::vector<std::vector<size_t>>(numberOfFixedNodes, std::vector<size_t>())}), numberOfEdges(addEdges(edgeEntries))
     {
         if (numberOfEdges != expectedNumberOfEdges)
             throw std::invalid_argument("The number of distinct edges in the list does not match the number of expected edges. (" + std::to_string(expectedNumberOfEdges) + " expected, but " + std::to_string(numberOfEdges) + " provided)");
-    }
-
-    bool getEntry(size_t identifierOfFixedNode, size_t identifierOfFreeNode)
-    {
-        size_t index{getIndexForIdentifiers(identifierOfFixedNode, identifierOfFreeNode)};
-
-        return edges.at(index);
     }
 
     std::string to_string()
@@ -85,9 +93,15 @@ public:
     
         for (size_t fixedIdentifier{1}; fixedIdentifier <= numberOfFixedNodes; fixedIdentifier++) {
             result += "\t\t";
-            for (size_t freeIdentifier{numberOfFixedNodes + 1}; freeIdentifier <= numberOfFixedNodes + numberOfFreeNodes; freeIdentifier++) {
-                result += getEntry(fixedIdentifier, freeIdentifier) ? "1 " : "0 ";
+            result = result + std::to_string(fixedIdentifier) + ": ";
+            size_t indexOfFixedNode = getIndexForFixedNode(fixedIdentifier);
+            auto& neighboursOfFixedNode{adjacencyList.at(indexOfFixedNode)};
+
+            for (auto& entry : neighboursOfFixedNode) {
+                result = result + std::to_string(entry) + " ";
             }
+
+
             result += "\n";
         }
         result += "}";
