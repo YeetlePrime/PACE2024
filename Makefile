@@ -1,17 +1,34 @@
-CC			:= g++
-CFLAGS		:= -std=c++17 -fdiagnostics-color=always -Wall -Wpedantic -g
-LIBRARIES	:=
+CXX = g++
+CXXFLAGS = -std=c++17 -fdiagnostics-color=always -Wall -Wpedantic -g
+INC_DIRS = -Isrc -Ilib
 
-SRC			:= src
-INCLUDE		:= lib
+SRC_DIR = src
+LIB_DIR = lib
+
+HEADERS = $(wildcard $(SRC_DIR)/*.hpp)
+LIBRARIES = $(wildcard $(LIB_DIR)/*.cpp)
+
+# List all your source files in the src directory
+SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
+
+# Generate the object files corresponding to the source files
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(SRC_DIR)/%.o)
 
 all: main.exe
 
-main.exe: $(SRC)/main.cpp $(INCLUDE)/*.h $(SRC)/*.hpp
-	$(CC) $(CFLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+$(SRC_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) $(INC_DIRS) -c -o $@ $<
 
-run: clean all
-	./main.exe "ressources/tiny_test_set/complete_4_5.gr"
+$(LIB_DIR)/%.o: $(LIB_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) $(INC_DIRS) -c -o $@ $<
+
+main.exe: $(OBJECTS) $(HEADERS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LIBRARIES)
 
 clean:
-	rm -f *.exe
+	rm -f $(SRC_DIR)/*.o $(LIB_DIR)/*.o main.exe
+
+run: all
+	./main.exe "ressources/tiny_test_set/complete_4_5.gr"
+
+.PHONY: all clean
