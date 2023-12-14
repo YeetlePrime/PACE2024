@@ -4,21 +4,21 @@
 #include <iostream>
 #include <fstream>
 
-#include "OcrGraph.hpp"
+#include "Graph.hpp"
 
 class GraphBuilder
 {
 private:
     struct GraphInfo
     {
-        std::string problemDescriptor{""};
-        size_t numberOfFixedNodes{0};
-        size_t numberOfFreeNodes{0};
-        size_t numberOfEdges{0};
-        std::vector<std::pair<size_t, size_t>> edgeEntries{};
+        std::string problemDescriptor{ "" };
+        int numberOfFixedNodes{ 0 };
+        int numberOfFreeNodes{ 0 };
+        int numberOfEdges{ 0 };
+        std::vector<std::pair<int, int>> edgeEntries{};
     };
 
-    static bool stringStartsWith(const std::string &string, char character) noexcept
+    static bool stringStartsWith(const std::string& string, char character) noexcept
     {
         if (string.empty())
             return false;
@@ -26,13 +26,13 @@ private:
         return string.at(0) == character;
     }
 
-    static bool stringEndsWith(const std::string &string, const std::string& endString) noexcept
+    static bool stringEndsWith(const std::string& string, const std::string& endString) noexcept
     {
         if (string.size() < endString.size())
             return false;
 
-        auto stringIter{string.rbegin()};
-        auto endStringIter{endString.rbegin()};
+        auto stringIter{ string.rbegin() };
+        auto endStringIter{ endString.rbegin() };
 
         while (endStringIter != endString.rend() && stringIter != string.rend()) {
             if (*stringIter != *endStringIter)
@@ -44,13 +44,13 @@ private:
         return true;
     }
 
-    static std::vector<std::string> splitString(const std::string &string, char delimiter) noexcept
+    static std::vector<std::string> splitString(const std::string& string, char delimiter) noexcept
     {
         if (string.empty())
             return {};
 
         std::vector<std::string> result{};
-        auto current{string.begin()};
+        auto current{ string.begin() };
 
         // load word by word
         while (current != string.end())
@@ -71,7 +71,7 @@ private:
         return result;
     }
 
-    static void readPLine(const std::string &pLine, GraphInfo &ocrGraphInfo)
+    static void readPLine(const std::string& pLine, GraphInfo& ocrGraphInfo)
     {
         if (!stringStartsWith(pLine, 'p'))
             throw std::runtime_error("The p-line doesn't start with p.");
@@ -93,7 +93,7 @@ private:
         }
     }
 
-    static void readEdgeLine(const std::string &edgeLine, GraphInfo& ocrGraphInfo)
+    static void readEdgeLine(const std::string& edgeLine, GraphInfo& ocrGraphInfo)
     {
         auto strings = splitString(edgeLine, ' ');
         std::pair<size_t, size_t> edgeInfo;
@@ -115,8 +115,7 @@ private:
     }
 
 public:
-    static OcrGraph buildFromInputStream(std::istream &stream)
-    {
+    static GraphInfo buildGraphInfoFromInputStream(std::istream& stream) {
         std::string line;
 
         // skip comment lines
@@ -128,30 +127,36 @@ public:
         if (!stringStartsWith(line, 'p'))
             throw std::runtime_error("The file doesn't start with a p line (after comments).");
 
-        GraphInfo ocrGraphInfo;
+        GraphInfo result;
 
-        readPLine(line, ocrGraphInfo);
+        readPLine(line, result);
 
         while (std::getline(stream, line))
         {
             if (stringStartsWith(line, 'c'))
                 continue;
 
-            readEdgeLine(line, ocrGraphInfo);
+            readEdgeLine(line, result);
         }
 
-        return OcrGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.edgeEntries);
+        return result;
     }
 
-    static OcrGraph buildFromFile(const std::string& filepath) {
+    static GraphInfo buildGraphInfoFromFile(const std::string& filepath) {
         if (!stringEndsWith(filepath, ".gr"))
             throw std::invalid_argument("The provided file has to be of type \".gr\".");
 
         std::ifstream file(filepath);
         if (file.fail())
             throw std::runtime_error("The file \"" + filepath + "\" does not exist.");
-        
-        return buildFromInputStream(file);
+
+        return buildGraphInfoFromInputStream(file);
+    }
+
+    static Graph buildGraphFromFile(const std::string& filepath) {
+        GraphInfo graphInfo{ buildGraphInfoFromFile(filepath) };
+
+        return Graph(graphInfo.numberOfFixedNodes + graphInfo.numberOfFreeNodes, graphInfo.edgeEntries);
     }
 };
 
