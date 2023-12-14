@@ -1,21 +1,21 @@
-#ifndef __OCR_GRAPH_BUILDER_HPP__
-#define __OCR_GRAPH_BUILDER_HPP__
+#ifndef __GRAPH_BUILDER_HPP__
+#define __GRAPH_BUILDER_HPP__
 
 #include <iostream>
 #include <fstream>
 
-#include "OcrGraph.hpp"
+#include "DirectedGraph.hpp"
 
-class OcrGraphBuilder
+class GraphBuilder
 {
 private:
-    struct OcrGraphInfo
+    struct GraphInfo
     {
-        std::string problemDescriptor = "";
-        size_t numberOfFixedNodes = 0;
-        size_t numberOfFreeNodes = 0;
-        size_t numberOfEdges = 0;
-        std::vector<std::pair<size_t, size_t>> edgeEntries = {};
+        std::string problemDescriptor{""};
+        size_t numberOfFixedNodes{0};
+        size_t numberOfFreeNodes{0};
+        size_t numberOfEdges{0};
+        std::vector<std::pair<size_t, size_t>> edgeEntries{};
     };
 
     static bool stringStartsWith(const std::string &string, char character) noexcept
@@ -71,7 +71,7 @@ private:
         return result;
     }
 
-    static void readPLine(const std::string &pLine, OcrGraphInfo &ocrGraphInfo)
+    static void readPLine(const std::string &pLine, GraphInfo &ocrGraphInfo)
     {
         if (!stringStartsWith(pLine, 'p'))
             throw std::runtime_error("The p-line doesn't start with p.");
@@ -93,7 +93,7 @@ private:
         }
     }
 
-    static void readEdgeLine(const std::string &edgeLine, OcrGraphInfo& ocrGraphInfo)
+    static void readEdgeLine(const std::string &edgeLine, GraphInfo& ocrGraphInfo)
     {
         auto strings = splitString(edgeLine, ' ');
         std::pair<size_t, size_t> edgeInfo;
@@ -115,12 +115,12 @@ private:
     }
 
 public:
-    static OcrGraph buildFromInputStream(std::istream &stream)
+    static DirectedGraph buildFromInputStream(std::istream &stream)
     {
         std::string line;
 
         // skip comment lines
-        while (std::getline(stream, line) && stringStartsWith(line, 'c'))
+        while (std::getline(stream, line) && (stringStartsWith(line, 'c')))
         {
         }
 
@@ -128,7 +128,7 @@ public:
         if (!stringStartsWith(line, 'p'))
             throw std::runtime_error("The file doesn't start with a p line (after comments).");
 
-        OcrGraphInfo ocrGraphInfo;
+        GraphInfo ocrGraphInfo;
 
         readPLine(line, ocrGraphInfo);
 
@@ -140,10 +140,10 @@ public:
             readEdgeLine(line, ocrGraphInfo);
         }
 
-        return OcrGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.numberOfEdges, ocrGraphInfo.edgeEntries);
+        return DirectedGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.edgeEntries);
     }
 
-    static OcrGraph buildFromFile(const std::string& filepath) {
+    static DirectedGraph buildFromFile(const std::string& filepath) {
         if (!stringEndsWith(filepath, ".gr"))
             throw std::invalid_argument("The provided file has to be of type \".gr\".");
 

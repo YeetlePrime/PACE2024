@@ -1,5 +1,4 @@
-#include "OcrGraphBuilder.hpp"
-#include "OcrGraph.hpp"
+#include "GraphBuilder.hpp"
 
 #include <unistd.h>
 
@@ -14,7 +13,7 @@ int main(int argc, char *argv[])
     filepath = filepath.substr(0, filepath.size() - 8);
     filepath.append(argv[1]);
 
-    OcrGraph graph{OcrGraphBuilder::buildFromFile(filepath)};
+    DirectedGraph graph{GraphBuilder::buildFromFile(filepath)};
 
     std::cout << graph.to_string() << std::endl;
 
