@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
+#include <queue>
 
 class DirectedGraph
 {
@@ -65,7 +66,7 @@ private:
         return true;
     }
 
-public:
+    public:
     DirectedGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) noexcept
         : numberOfFixedNodes(numberOfFixedNodes)
         , numberOfFreeNodes(numberOfFreeNodes)
@@ -93,21 +94,20 @@ public:
 
     std::string to_string() const
     {
-        std::string result = "OcrGraph{\n\t#fixedNodes: " + std::to_string(numberOfFixedNodes) + "\n\t#freeNodes: " + std::to_string(numberOfFreeNodes) + "\n\tadjacencyList:\n";
+        std::string result = "OcrGraph{\n\t#fixedNodes: " + std::to_string(numberOfFixedNodes) + "\n\t#freeNodes: " + std::to_string(numberOfFreeNodes) + "\n\tadjacencyList:";
 
         size_t currentFixedIdentifier{ 1 };
         for (const auto& neighboursOfFixedNode : adjacencyList) {
-            result = result + "\t\t" + std::to_string(currentFixedIdentifier) + ": ";
+            result = result + "\n\t\t" + std::to_string(currentFixedIdentifier) + ": ";
 
             for (const auto& neighbour : neighboursOfFixedNode) {
                 result = result + std::to_string(neighbour) + " ";
             }
 
-            result += "\n";
             currentFixedIdentifier++;
         }
 
-        result += "}";
+        result += "\n}";
 
         return result;
     }
