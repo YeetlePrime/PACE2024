@@ -1,12 +1,12 @@
-#ifndef __DIRECTED_GRAPH_HPP__
-#define __DIRECTED_GRAPH_HPP__
+#ifndef __OCR_GRAPH_HPP__
+#define __OCR_GRAPH_HPP__
 
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
 #include <queue>
 
-class DirectedGraph
+class OcrGraph
 {
 private:
     const size_t numberOfFixedNodes;
@@ -67,14 +67,14 @@ private:
     }
 
     public:
-    DirectedGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) noexcept
+    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes) noexcept
         : numberOfFixedNodes(numberOfFixedNodes)
         , numberOfFreeNodes(numberOfFreeNodes)
         , adjacencyList(std::vector<std::vector<size_t>>(numberOfFixedNodes, std::vector<size_t>()))
     {
     }
 
-    DirectedGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes, const std::vector<std::pair<size_t, size_t>>& edges)
+    OcrGraph(size_t numberOfFixedNodes, size_t numberOfFreeNodes, const std::vector<std::pair<size_t, size_t>>& edges)
         : numberOfFixedNodes(numberOfFixedNodes)
         , numberOfFreeNodes(numberOfFreeNodes)
         , adjacencyList(std::vector<std::vector<size_t>>(numberOfFixedNodes, std::vector<size_t>()))

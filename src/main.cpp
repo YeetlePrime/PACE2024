@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     filepath = filepath.substr(0, filepath.size() - 8);
     filepath.append(argv[1]);
 
-    DirectedGraph graph{GraphBuilder::buildFromFile(filepath)};
+    OcrGraph graph{GraphBuilder::buildFromFile(filepath)};
 
     std::cout << graph.to_string() << std::endl;
 

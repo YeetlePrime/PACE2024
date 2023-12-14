@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "DirectedGraph.hpp"
+#include "OcrGraph.hpp"
 
 class GraphBuilder
 {
@@ -115,7 +115,7 @@ private:
     }
 
 public:
-    static DirectedGraph buildFromInputStream(std::istream &stream)
+    static OcrGraph buildFromInputStream(std::istream &stream)
     {
         std::string line;
 
@@ -140,10 +140,10 @@ public:
             readEdgeLine(line, ocrGraphInfo);
         }
 
-        return DirectedGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.edgeEntries);
+        return OcrGraph(ocrGraphInfo.numberOfFixedNodes, ocrGraphInfo.numberOfFreeNodes, ocrGraphInfo.edgeEntries);
     }
 
-    static DirectedGraph buildFromFile(const std::string& filepath) {
+    static OcrGraph buildFromFile(const std::string& filepath) {
         if (!stringEndsWith(filepath, ".gr"))
             throw std::invalid_argument("The provided file has to be of type \".gr\".");
 
