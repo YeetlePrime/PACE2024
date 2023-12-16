@@ -111,7 +111,24 @@ public:
 
     size_t computeNumberOfCrossings() const {
         size_t crossings = 0;
-        // TODO
+
+        // Get edges from the graph
+        std::vector<std::pair<int, int>> edges = computeEdges();
+
+        for (size_t i = 0; i < edges.size(); ++i) {
+            for (size_t j = i + 1; j < edges.size(); ++j) {
+                // Check if edges (i, j) and (j, i) cross
+                int xi = edges[i].first;
+                int yi = edges[i].second;
+                int xj = edges[j].first;
+                int yj = edges[j].second;
+
+                if ((xi < xj && yi > yj) || (xi > xj && yi < yj)) {
+                    crossings++;
+                }
+            }
+        }
+
         return crossings;
     }
 
@@ -157,9 +174,9 @@ public:
 
     std::vector<std::pair<int, int>> computeEdges() const {
         std::vector<std::pair<int, int>> edges;
-        for (int fixedNode{1}; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++) {
+        for (int fixedNode{ 1 }; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++) {
             for (auto freeNode : getNeighboursOfFixedNode(fixedNode)) {
-                edges.push_back({fixedNode, freeNode});
+                edges.push_back({ fixedNode, freeNode });
             }
         }
 
