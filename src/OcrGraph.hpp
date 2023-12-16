@@ -146,6 +146,25 @@ public:
     void setOrderingOfFreeNodes(std::vector<size_t>&& ordering) {
         orderingOfFreeNodes = std::move(ordering);
     }
+
+    size_t getNumberOfFixedNodes() const {
+        return numberOfFixedNodes;
+    }
+
+    size_t getNumberOfFreeNodes() const {
+        return numberOfFreeNodes;
+    }
+
+    std::vector<std::pair<int, int>> computeEdges() const {
+        std::vector<std::pair<int, int>> edges;
+        for (int fixedNode{1}; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++) {
+            for (auto freeNode : getNeighboursOfFixedNode(fixedNode)) {
+                edges.push_back({fixedNode, freeNode});
+            }
+        }
+
+        return edges;
+    }
 };
 
 #endif

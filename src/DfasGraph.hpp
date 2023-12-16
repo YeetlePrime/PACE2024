@@ -6,7 +6,7 @@
 
 using namespace std;
 
-class Graph {
+class DfasGraph {
     int numberOfNodes;
     vector<vector<int>> adjacencyList;
 
@@ -15,47 +15,47 @@ class Graph {
     }
 
 public:
-    Graph(int numberOfNodes) : numberOfNodes(numberOfNodes), adjacencyList(vector<vector<int>>(numberOfNodes, vector<int>())) {}
+    DfasGraph(int numberOfNodes) : numberOfNodes(numberOfNodes), adjacencyList(vector<vector<int>>(numberOfNodes, vector<int>())) {}
 
-    Graph(int numberOfNodes, const vector<pair<int, int>>& edges) : numberOfNodes(numberOfNodes), adjacencyList(vector<vector<int>>(numberOfNodes, vector<int>())) {
+    DfasGraph(int numberOfNodes, const vector<pair<int, int>>& edges) : numberOfNodes(numberOfNodes), adjacencyList(vector<vector<int>>(numberOfNodes, vector<int>())) {
         for (const auto& edge : edges) {
             addEdge(edge.first, edge.second);
         }
     }
 
-    vector<int> sortVertices() {
-        vector<int> in_degree(numberOfNodes, 0);
+    vector<int> sortNodes() {
+        vector<int> inDegree(numberOfNodes, 0);
         for (int u = 0; u < numberOfNodes; ++u) {
             for (int v : adjacencyList[u]) {
-                in_degree[v]++;
+                inDegree[v]++;
             }
         }
 
         queue<int> q;
         for (int u = 0; u < numberOfNodes; ++u) {
-            if (in_degree[u] == 0) {
+            if (inDegree[u] == 0) {
                 q.push(u);
             }
         }
 
-        vector<int> sorted_vertices;
+        vector<int> sortedNodes;
         while (!q.empty()) {
             int u = q.front();
             q.pop();
-            sorted_vertices.push_back(u);
+            sortedNodes.push_back(u);
 
             for (int v : adjacencyList[u]) {
-                if (--in_degree[v] == 0) {
+                if (--inDegree[v] == 0) {
                     q.push(v);
                 }
             }
         }
 
-        return sorted_vertices;
+        return sortedNodes;
     }
 
     vector<int> sortFAS() {
-        vector<int> sortedNodes = sortVertices();
+        vector<int> sortedNodes = sortNodes();
         vector<int> feedbackArcSet;
         unordered_set<int> removedNodes;
 

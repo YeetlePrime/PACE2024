@@ -13,13 +13,16 @@ int main(int argc, char *argv[])
     filepath = filepath.substr(0, filepath.size() - 8);
     filepath.append(argv[1]);
 
-    OcrGraph graph{GraphBuilder::buildOcrGraphFromFile(filepath)};
+    OcrGraph ocrGraph{GraphBuilder::buildOcrGraphFromFile(filepath)};
+    DfasGraph dfasGraph = GraphBuilder::convertOcrGraphToGraph(ocrGraph);
+    
+    std::cout << ocrGraph.to_string() << std::endl << "Computed Order: ";
+    for (auto nodeIndex : dfasGraph.sortFAS()) {
+        std::cout << nodeIndex + 1 << " ";
+    }
 
-    std::cout << graph.to_string() << std::endl;
+    std::cout << std::endl;
 
-    graph.setOrderingOfFreeNodes({5, 7, 6, 8});
-
-    std::cout << graph.to_string() << std::endl;
 
     return EXIT_SUCCESS;
 }

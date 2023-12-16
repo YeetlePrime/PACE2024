@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "OcrGraph.hpp"
+#include "DfasGraph.hpp"
 
 class GraphBuilder
 {
@@ -157,6 +158,10 @@ public:
         GraphInfo graphInfo{ buildGraphInfoFromFile(filepath) };
 
         return OcrGraph(graphInfo.numberOfFixedNodes, graphInfo.numberOfFreeNodes, graphInfo.edges);
+    }
+
+    static DfasGraph convertOcrGraphToGraph(const OcrGraph& ocrGraph) {
+        return DfasGraph(ocrGraph.getNumberOfFixedNodes() + ocrGraph.getNumberOfFreeNodes(), ocrGraph.computeEdges());
     }
 };
 
