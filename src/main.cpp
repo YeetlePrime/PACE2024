@@ -21,10 +21,16 @@ int main(int argc, char* argv[])
             << ocrGraph.to_string() << std::endl 
             << dfasGraph.to_string() << std::endl
             << "Computed Order: ";
-        for (auto nodeIndex : dfasGraph.sortFAS()) {
+
+        auto newOrder = dfasGraph.sortFAS();
+        std::vector<size_t> newOrderAsSizeT{};
+        for (auto& nodeIndex : newOrder) {
+            newOrderAsSizeT.push_back(nodeIndex + 1);
             std::cout << nodeIndex + 1 << " ";
         }
+        ocrGraph.setOrderingOfFreeNodes(std::move(newOrderAsSizeT));
         std::cout << std::endl
+            << "Crossings with new order: " << ocrGraph.computeNumberOfCrossings() << std::endl
             << "-----------------------------------------------" << std::endl;
 
     }
