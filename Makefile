@@ -29,6 +29,6 @@ clean:
 	rm -f $(SRC_DIR)/*.o $(LIB_DIR)/*.o main.exe
 
 run: all
-	./main.exe "ressources/tiny_test_set/cycle_8_sorted.gr"
+	./main.exe "ressources/tiny_test_set"
 
 .PHONY: all clean
