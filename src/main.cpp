@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
     filepath = filepath.substr(0, filepath.size() - 8);
     filepath.append(argv[1]);
 
-    Graph graph{GraphBuilder::buildGraphFromFile(filepath)};
+    OcrGraph graph{GraphBuilder::buildOcrGraphFromFile(filepath)};
 
-    std::cout << "Direted Feedback Arc Set (FAS): ";
-    for (auto node : graph.sortFAS()) {
-        std::cout << node + 1 << " ";
-    }
-    std::cout << std::endl;
+    std::cout << graph.to_string() << std::endl;
+
+    graph.setOrderingOfFreeNodes({5, 7, 6, 8});
+
+    std::cout << graph.to_string() << std::endl;
 
     return EXIT_SUCCESS;
 }

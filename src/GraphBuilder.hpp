@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "Graph.hpp"
+#include "OcrGraph.hpp"
 
 class GraphBuilder
 {
@@ -12,10 +12,10 @@ private:
     struct GraphInfo
     {
         std::string problemDescriptor{ "" };
-        int numberOfFixedNodes{ 0 };
-        int numberOfFreeNodes{ 0 };
-        int numberOfEdges{ 0 };
-        std::vector<std::pair<int, int>> edgeEntries{};
+        size_t numberOfFixedNodes{ 0 };
+        size_t numberOfFreeNodes{ 0 };
+        size_t numberOfEdges{ 0 };
+        std::vector<std::pair<size_t, size_t>> edges{};
     };
 
     static bool stringStartsWith(const std::string& string, char character) noexcept
@@ -76,7 +76,7 @@ private:
         if (!stringStartsWith(pLine, 'p'))
             throw std::runtime_error("The p-line doesn't start with p.");
 
-        auto strings = splitString(pLine, ' ');
+        auto strings{ splitString(pLine, ' ') };
 
         try
         {
@@ -106,7 +106,7 @@ private:
             edgeInfo.first = std::stol(strings.at(0));
             edgeInfo.second = std::stol(strings.at(1));
 
-            ocrGraphInfo.edgeEntries.push_back(edgeInfo);
+            ocrGraphInfo.edges.push_back(edgeInfo);
         }
         catch (...)
         {
@@ -153,10 +153,10 @@ public:
         return buildGraphInfoFromInputStream(file);
     }
 
-    static Graph buildGraphFromFile(const std::string& filepath) {
+    static OcrGraph buildOcrGraphFromFile(const std::string& filepath) {
         GraphInfo graphInfo{ buildGraphInfoFromFile(filepath) };
 
-        return Graph(graphInfo.numberOfFixedNodes + graphInfo.numberOfFreeNodes, graphInfo.edgeEntries);
+        return OcrGraph(graphInfo.numberOfFixedNodes, graphInfo.numberOfFreeNodes, graphInfo.edges);
     }
 };
 
