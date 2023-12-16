@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
 
         std::cout << "----- " << entry.path() << " ----------" << std::endl
             << ocrGraph.to_string() << std::endl 
+            << dfasGraph.to_string() << std::endl
             << "Computed Order: ";
         for (auto nodeIndex : dfasGraph.sortFAS()) {
             std::cout << nodeIndex + 1 << " ";
