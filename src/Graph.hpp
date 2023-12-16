@@ -55,19 +55,19 @@ public:
     }
 
     vector<int> sortFAS() {
-        vector<int> sorted_vertices = sortVertices();
-        vector<int> feedback_arc_set;
-        unordered_set<int> removed;
+        vector<int> sortedNodes = sortVertices();
+        vector<int> feedbackArcSet;
+        unordered_set<int> removedNodes;
 
-        for (int u : sorted_vertices) {
+        for (int u : sortedNodes) {
             for (int v : adjacencyList[u]) {
-                if (!removed.count(v)) {
-                    feedback_arc_set.push_back(v);
-                    removed.insert(v);
+                if (!removedNodes.count(v)) {
+                    feedbackArcSet.push_back(v);
+                    removedNodes.insert(v);
                 }
             }
         }
 
-        return feedback_arc_set;
+        return feedbackArcSet;
     }
 };
