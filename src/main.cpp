@@ -29,10 +29,12 @@ int main(int argc, char* argv[])
             std::cout << nodeIndex + 1 << " ";
         }
         ocrGraph.setOrderingOfFreeNodes(std::move(newOrderAsSizeT));
+
+
         std::cout << std::endl
+            << ocrGraph.to_string() << std::endl
             << "Crossings with new order: " << ocrGraph.computeNumberOfCrossings() << std::endl
             << "-----------------------------------------------" << std::endl;
-
     }
 
 

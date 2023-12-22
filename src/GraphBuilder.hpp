@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 
 #include "OcrGraph.hpp"
 #include "DfasGraph.hpp"

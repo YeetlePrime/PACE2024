@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <sstream>
+#include <unordered_map>
 
 class OcrGraph {
 private:
@@ -113,18 +114,29 @@ public:
         size_t crossings = 0;
 
         // Get edges from the graph
-        std::vector<std::pair<int, int>> edges = computeEdges();
+        //std::vector<std::pair<int, int>> edges = computeEdges();
 
-        for (size_t i = 0; i < edges.size(); ++i) {
-            for (size_t j = i + 1; j < edges.size(); ++j) {
-                // Check if edges (i, j) and (j, i) cross
-                int xi = edges[i].first;
-                int yi = edges[i].second;
-                int xj = edges[j].first;
-                int yj = edges[j].second;
+        std::unordered_map<int, int> position;
+        for(int i = 0; i < static_cast<int>(numberOfFreeNodes); i++){
+            position[orderingOfFreeNodes[i]] = i;               
+        }
 
-                if ((xi < xj && yi > yj) || (xi > xj && yi < yj)) {
-                    crossings++;
+        for (int fixedNode{ 1 }; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++){
+            for (int j = fixedNode + 1; j <= static_cast<int>(numberOfFixedNodes); j++) {
+                int u1 = fixedNode;
+                int u2 = j;
+
+                for (const auto& v1 : adjacencyList[u1 - 1]) {
+                    for (const auto& v2 : adjacencyList[u2 - 1]) {
+                        auto it1 = position.find(v1);
+                        auto it2 = position.find(v2);
+                        int pos_v1 = it1->second;
+                        int pos_v2 = it2->second;
+
+                        if(pos_v1 > pos_v2){
+                            crossings++;
+                        }
+                    }
                 }
             }
         }
