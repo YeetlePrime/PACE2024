@@ -117,11 +117,11 @@ public:
         //std::vector<std::pair<int, int>> edges = computeEdges();
 
         std::unordered_map<int, int> position;
-        for(int i = 0; i < static_cast<int>(numberOfFreeNodes); i++){
-            position[orderingOfFreeNodes[i]] = i;               
+        for (int i = 0; i < static_cast<int>(numberOfFreeNodes); i++) {
+            position[orderingOfFreeNodes[i]] = i;
         }
 
-        for (int fixedNode{ 1 }; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++){
+        for (int fixedNode{ 1 }; fixedNode <= static_cast<int>(numberOfFixedNodes); fixedNode++) {
             for (int j = fixedNode + 1; j <= static_cast<int>(numberOfFixedNodes); j++) {
                 int u1 = fixedNode;
                 int u2 = j;
@@ -133,7 +133,7 @@ public:
                         int pos_v1 = it1->second;
                         int pos_v2 = it2->second;
 
-                        if(pos_v1 > pos_v2){
+                        if (pos_v1 > pos_v2) {
                             crossings++;
                         }
                     }
@@ -142,6 +142,10 @@ public:
         }
 
         return crossings;
+    }
+
+    const std::vector<size_t>& getOrderingOfFreeNodes() const {
+        return orderingOfFreeNodes;
     }
 
     std::string to_string() const {
